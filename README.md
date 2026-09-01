@@ -11,7 +11,7 @@ This repository demonstrates the application of the proposed framework to a rare
 
 ## Overview
 
-<img width="1920" height="691" alt="framework" src="https://github.com/user-attachments/assets/0cb20fcb-6f82-4cee-941e-b7b0f3c476b7" />
+<img width="1920" height="691" alt="framework" src="framework.png" />
 
 The proposed framework considers a setting in which covariates \(X\) and a surrogate indicator \(S\) are available for all observations, while the true binary response \(Y\) is costly to obtain.
 
