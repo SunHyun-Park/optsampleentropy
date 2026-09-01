@@ -2,8 +2,7 @@
 rm(list=ls())
 .libPaths( c( .libPaths(), '/storage/home/s/szl562/R/x86_64-redhat-linux-gnu-library/3.5') )
 .libPaths( c( .libPaths(), '/storage/home/s/szl562/R/x86_64-redhat-linux-gnu-library/3.6') )
-setwd("~/mysim/othersim/stroke")
-source('otherftn_ds.R')
+source('Comparison methods.R')
 
 #install.packages('data.table')
 #install.packages('caret')
@@ -34,7 +33,7 @@ data <- data[order(data$stroke)]
 data <- data[bmi != "N/A"]
 data$bmi <- as.numeric(data$bmi)
 nrow(data)
-data <- data[gender!="Other"] #1개라서 삭제
+data <- data[gender!="Other"] 
 nrow(data)
 data <- data[smoking_status!="Unknown"] 
 #Note: "Unknown" in smoking_status means that the information is unavailable for this patient
@@ -52,6 +51,7 @@ s <- rep(0,length(data$stroke))
 dummy <- dummyVars(stroke~., data=data, fullRank=T) 
 x <- cbind(1,predict(dummy, data))
 mean(y)
+
 # Split pilot -----------------------------------------------
 
 n <- length(y)
