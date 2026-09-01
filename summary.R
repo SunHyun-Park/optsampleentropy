@@ -10,7 +10,7 @@ to.list <- function(i,comp) lapply(get(paste0('result',i)), function(x) x[[comp]
 # Load --------------------------------------------------------------------
 
 m <- 300
-sizes <- 300
+sizes <- sizes <- c(200, 300, 400)
 
 for(i in 1:length(sizes)){
   load(paste0('result-',m,'-',sizes[i],'.RData'))
