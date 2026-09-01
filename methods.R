@@ -9,7 +9,7 @@ safe_solve <- function(M, rcond_tol = 1e-8) {
 }
 
 # Functions ---------------------------------------------------------------
-
+           
 # MSE
 
 ftn.mse <- function(y,x,r,w,beta){
@@ -154,7 +154,7 @@ ftn.osca <- function(y,s,x,r,gamma.f){
   beta.v-c(safe_solve(Hy)%*%Gsy%*%safe_solve(Gs)%*%Hs%*%(gamma.v-gamma.f))
 }
 
-# Summary statistics
+# Summary statistics ----------------------------------------------------
 
 ftn.summary <- function(y,s,x,ps,beta){
   p <- 1/(1+exp(-c(x%*%beta)))
