@@ -39,3 +39,12 @@ After preprocessing, **3,425 observations** remain in the final dataset.
 No outcome-based filtering or sampling procedure is applied during the preprocessing stage.
 
 ## Repository Structure
+
+```text
+data-preprocessing-repository/
+├── README.md
+├── data/
+│   └── processed_data.csv
+├── code/
+│   └── data_preprocessing.R
+└── data_dictionary.md
