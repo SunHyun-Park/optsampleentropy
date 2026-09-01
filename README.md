@@ -242,41 +242,13 @@ The figure describes the full procedure from the target population and surrogate
 
 Contains the original **Healthcare Stroke Prediction Dataset** used in the real-data application.
 
-The dataset contains 5,110 patient records with demographic, clinical, and lifestyle variables and the binary stroke response.
-
 ### `methods.R`
 
 Contains the statistical and numerical functions used to implement the proposed CE method and the comparison methods.
 
-Specifically, the file includes:
-
-- MSE loss, gradient, and parameter estimation,
-- MSE-based optimal sampling probability calculation,
-- maximum likelihood estimation,
-- inverse-probability-weighted cross-entropy loss and gradient,
-- CE-based parameter estimation,
-- the proposed CE-based optimal sampling probability calculation,
-- OSCA estimation,
-- numerical matrix inversion utilities, and
-- prediction and MSE summary functions.
-
 ### `simulation.R`
 
 Implements the main healthcare stroke data experiment.
-
-The script:
-
-- loads and preprocesses the original stroke dataset,
-- constructs the prediction design matrix,
-- sets `S = 0` for all observations,
-- randomly selects the pilot sample,
-- obtains preliminary MSE- and CE-based estimators,
-- removes the pilot observations from the subsequent analysis sample,
-- computes MSE- and CE-based optimal sampling probabilities,
-- fits the FULL benchmark,
-- repeatedly implements CE, MSE, OSCA, and SRS,
-- stores predicted probabilities and MSE values from each repetition, and
-- saves the resulting R workspace for subsequent evaluation.
 
 ### `summary.R`
 
@@ -325,4 +297,4 @@ If you use this repository in academic work, please cite:
 
 ## Acknowledgement
 
-This repository was developed with support from the **서울시립대학교 데이터 사이언스 플러스 차세대 융합인재 양성사업단** - http://dsplus.uos.ac.kr/
+This repository was developed with support from the 서울시립대학교 데이터 사이언스 플러스 차세대 융합인재 양성사업단 - http://dsplus.uos.ac.kr/
