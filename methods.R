@@ -1,4 +1,3 @@
-
 safe_solve <- function(M, rcond_tol = 1e-8) {
   rc <- tryCatch(1/kappa(M), error=function(e) 0)
   if (!is.finite(rc) || rc < rcond_tol) {
@@ -92,7 +91,7 @@ ftn.ce.beta <- function(y,x,d,pi,start) {
   )
 }
 
-# PI OPT
+# pi OPT
 
 ftn.piopt.ce <- function(s, x, beta, C) {
   n <- nrow(x)
