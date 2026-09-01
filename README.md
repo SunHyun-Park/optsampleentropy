@@ -5,6 +5,7 @@ This repository provides the data preprocessing pipeline for the **Healthcare St
 The study considers **optimal sampling for risk prediction under measurement constraints**, where only a limited number of response measurements can be obtained. This repository provides the processed healthcare stroke data used to evaluate the optimal sampling procedure in a rare-outcome prediction setting.
 
 ## Overview
+<img width="1920" height="691" alt="framework" src="https://github.com/user-attachments/assets/0cb20fcb-6f82-4cee-941e-b7b0f3c476b7" />
 
 The objective of the stroke data analysis is to predict the risk of stroke based on patients' demographic, clinical, and lifestyle information.
 
