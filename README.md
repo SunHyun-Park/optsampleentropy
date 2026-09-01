@@ -5,75 +5,109 @@ This repository provides the R implementation of the healthcare stroke data appl
 **Park, S. and Lee, S.-H.**  
 *Surrogate-assisted optimal sampling for risk prediction under measurement constraints.*
 
-The study proposes an **optimal sampling framework for risk prediction under measurement constraints**, where response measurements are available only for a limited number of observations. The proposed sampling design directly targets out-of-sample prediction performance through the expected cross-entropy loss.
+The study proposes a **surrogate-assisted optimal sampling framework for risk prediction under measurement constraints**. When true responses are costly to obtain, the proposed method selectively measures informative observations and estimates the prediction model using an inverse-probability-weighted cross-entropy loss.
 
-This repository demonstrates the application of the proposed framework to a rare-outcome stroke prediction problem using the **Healthcare Stroke Prediction Dataset**.
+The sampling design is constructed to directly improve out-of-sample binary risk prediction by minimizing the leading contribution to the expected cross-entropy loss.
+
+This repository applies the proposed method to the **Healthcare Stroke Prediction Dataset**, representing a rare-outcome setting in which no surrogate information is available.
 
 ## Overview
 
 <img width="1920" height="691" alt="framework" src="framework.png" />
 
-The proposed framework considers a setting in which covariates \(X\) and a surrogate indicator \(S\) are available for all observations, while the true binary response \(Y\) is costly to obtain.
+The general framework assumes that covariates \(X\) and a surrogate indicator \(S\) are available for all observations, while the true binary response \(Y\) is costly to obtain.
 
-In the general surrogate-assisted setting:
+The procedure consists of:
 
-- \(S=1\) identifies confirmed positive observations, so that \(Y=1\) is known.
-- Observations with \(S=0\) form an unlabeled group whose true responses are not initially observed.
-- Under a limited measurement budget \(C\), informative observations are selected from the \(S=0\) group.
-- The selected observations are verified to obtain their true responses.
-- A risk prediction model is then fitted using an inverse-probability-weighted cross-entropy estimator.
+1. **Target Population**  
+   Covariates \(X\) and the surrogate \(S\) are available for all observations.
 
-The proposed sampling probabilities are designed to minimize the leading contribution to the expected out-of-sample **cross-entropy loss**, thereby directly targeting binary risk prediction performance.
+2. **Surrogate Split**  
+   Observations with \(S=1\) are confirmed positive cases whose responses are automatically identified as \(Y=1\).  
+   Observations with \(S=0\) form an unlabeled group whose true responses are initially unknown.
+
+3. **Optimal Sampling under Budget \(C\)**  
+   Informative observations are selected from the unlabeled group under a limited response measurement budget.
+
+4. **Response Measurement**  
+   The true responses \(Y\) are obtained for the selected observations.
+
+5. **Prediction Model**  
+   The prediction model is estimated using an inverse-probability-weighted cross-entropy loss.
+
+The objective is to improve **out-of-sample risk prediction** while using the limited response measurement budget efficiently.
 
 ## Optimal Sampling without Surrogate Information
 
-An important feature of the proposed framework is that it can also be applied when no surrogate information is available.
+Although the general framework allows the use of a positive-only surrogate, the proposed optimal sampling method does not require a surrogate to be available.
 
-For the healthcare stroke application, we set
+In the healthcare stroke application, no surrogate information is available. We therefore set
 
 ```text
-S = 0 for all observations.
+S = 0 for all observations
 ```
 
-Therefore, every observation initially belongs to the unlabeled group, and there are no automatically identified surrogate-positive cases.
+so that every observation initially belongs to the unlabeled group.
 
-Under this setting, the surrogate-assisted framework reduces to a **covariate-assisted optimal sampling design**.
+Under this setting, there are no automatically labeled positive observations. The surrogate-assisted framework consequently reduces to a **covariate-assisted optimal sampling design**, in which sampling decisions are determined using the observed covariates and a preliminary prediction model.
 
-The sampling procedure uses patient covariates and a preliminary risk prediction model to identify informative observations under the measurement budget. Thus, the proposed method can still perform optimal sampling even when a positive-only surrogate is unavailable.
+Thus, the stroke application illustrates that the proposed framework can be used both:
 
-This application is particularly useful for evaluating the proposed method under a **rare-outcome setting**, since the prevalence of stroke in the dataset is approximately 5%.
+- when a positive-only surrogate is available, and
+- when no surrogate information is available.
 
-## Proposed CE-based Optimal Sampling
+The latter is particularly relevant to the stroke data because stroke is a rare outcome, with a prevalence of approximately 5%.
+
+## CE-based Optimal Sampling
 
 Let \(p(x,\beta)\) denote the predicted probability of the binary response.
 
-The proposed method selects sampling probabilities to improve the prediction performance of the estimated model under a fixed response measurement budget.
+The proposed **CE method** constructs sampling probabilities to improve the out-of-sample prediction performance of the estimated model under a measurement budget \(C\).
 
-The procedure consists of the following steps:
+A preliminary estimator is first obtained from a pilot sample. Based on this estimator and the available covariates, the contribution of each observation to the leading cross-entropy prediction risk is evaluated.
+
+The sampling probabilities are then optimized under the measurement budget. Observations are sampled according to these probabilities, and the final prediction model is estimated using an inverse-probability-weighted cross-entropy loss.
+
+The overall procedure is:
 
 1. Obtain a preliminary estimator from a pilot sample.
-2. Compute the contribution of each observation to the leading cross-entropy prediction risk.
-3. Determine optimal sampling probabilities under the measurement budget \(C\).
-4. Sample observations according to the resulting probabilities.
-5. Obtain the true responses for the selected observations.
-6. Estimate the prediction model using an inverse-probability-weighted cross-entropy loss.
+2. Evaluate observation-specific contributions to the cross-entropy prediction risk.
+3. Determine the optimal sampling probabilities under budget \(C\).
+4. Sample observations according to the optimized probabilities.
+5. Obtain the true responses of the selected observations.
+6. Fit the prediction model using inverse-probability-weighted cross-entropy estimation.
 
-In contrast to sampling procedures based on parameter estimation error or prediction MSE, the proposed **CE method directly optimizes a criterion aligned with binary risk prediction**.
+Unlike sampling criteria based on parameter MSE, the proposed method directly targets **cross-entropy prediction loss**, which is aligned with binary risk prediction.
 
 ## Healthcare Stroke Dataset
 
-The **Healthcare Stroke Prediction Dataset** contains demographic, clinical, and lifestyle information related to stroke risk.
-
-The binary response is defined as:
-
-- `stroke = 1`: patient experienced a stroke
-- `stroke = 0`: patient did not experience a stroke
+The analysis uses the **Healthcare Stroke Prediction Dataset**, which contains demographic, clinical, and lifestyle information related to stroke risk.
 
 The original dataset contains:
 
 - Number of observations: `5,110`
-- Number of attributes: `12`
+- Number of variables: `12`
 - Response variable: `stroke`
+
+The response is defined as:
+
+- `stroke = 1`: patient experienced a stroke
+- `stroke = 0`: patient did not experience a stroke
+
+The variables in the original dataset are:
+
+- `id`
+- `gender`
+- `age`
+- `hypertension`
+- `heart_disease`
+- `ever_married`
+- `work_type`
+- `Residence_type`
+- `avg_glucose_level`
+- `bmi`
+- `smoking_status`
+- `stroke`
 
 ### Data Source
 
@@ -81,39 +115,60 @@ https://www.kaggle.com/datasets/fedesoriano/stroke-prediction-dataset
 
 ## Data Preprocessing
 
-The same preprocessing procedure used in the real-data application of the paper is applied.
+The preprocessing procedure follows the healthcare stroke application in the study.
 
-1. Remove observations with missing values in `bmi`.
-2. Remove the observation with `gender = "Other"`.
-3. Remove observations with `smoking_status = "Unknown"`.
-4. Convert categorical variables into factors for subsequent analysis.
+The analysis:
 
-After preprocessing, **3,425 observations** remain.
+1. removes the `id` variable,
+2. removes observations with unavailable `bmi` values,
+3. removes the observation with `gender = "Other"`,
+4. removes observations with `smoking_status = "Unknown"`,
+5. converts categorical variables to factors, and
+6. constructs a full-rank dummy-variable design matrix for prediction.
 
-The processed data are then converted into a design matrix for the prediction model.
+The original dataset contains `5,110` observations.
+
+After removing:
+
+- 201 observations with unavailable BMI,
+- one observation with `gender = "Other"`, and
+- observations with `smoking_status = "Unknown"`,
+
+**3,425 observations** remain for analysis.
+
+Among these observations, approximately **5.3%** experienced a stroke.
 
 ## Experimental Setting
 
-The healthcare stroke experiment evaluates the proposed CE-based optimal sampling method under limited response measurement budgets.
+For the stroke application, the surrogate indicator is defined as
 
-The experimental settings are:
+```text
+S = 0
+```
+
+for all 3,425 observations.
+
+A pilot sample is first randomly selected to obtain preliminary estimators. The pilot observations are subsequently excluded from the evaluation sample.
+
+The main experimental settings are:
 
 - Pilot sample size: `m = 300`
+- Remaining analysis sample size: `n = 3,125`
 - Measurement budgets: `C = 200, 300, 400`
 - Number of repetitions: `1,000`
 - Surrogate indicator: `S = 0` for all observations
 
-The following methods are compared:
+The following methods are evaluated:
 
 - **CE**: proposed cross-entropy-based optimal sampling
 - **MSE**: MSE-based optimal sampling
-- **OSCA**: surrogate-assisted sampling method
+- **OSCA**: comparison method based on surrogate-assisted sampling
 - **SRS**: simple random sampling
-- **FULL**: estimator fitted using the full data as a benchmark
+- **FULL**: estimator based on the full analysis sample, used as a benchmark
 
-Since no surrogate information is available in the stroke application, OSCA reduces to simple random sampling.
+Because \(S=0\) for every observation in the stroke application, no surrogate information is available to OSCA. In this setting, OSCA reduces to the SRS-based estimator.
 
-Prediction performance is evaluated using:
+The prediction performance is evaluated using:
 
 - Cross-entropy loss (CE)
 - Mean squared error (MSE)
@@ -123,7 +178,9 @@ Prediction performance is evaluated using:
 
 ## Reproducibility
 
-Install the required R packages:
+### Required R Packages
+
+Install the required R packages before running the analysis:
 
 ```r
 install.packages(c(
@@ -131,85 +188,127 @@ install.packages(c(
   "caret",
   "nloptr",
   "snowfall",
-  "pROC",
-  "ggplot2"
+  "pROC"
 ))
 ```
 
-The main analysis uses the functions for the proposed CE-based optimal sampling method and the comparison methods.
+### Run the Analysis
 
-For example, the analysis can be conducted under a pilot sample size of `m = 300` and measurement budget `C = 400`.
+The pilot sample size `m` and measurement budget `C` are supplied to `simulation.R` through command-line arguments.
 
-```r
-m <- 300
-C <- 400
+For the experimental settings used in the study, run:
+
+```bash
+Rscript simulation.R 300 200
+Rscript simulation.R 300 300
+Rscript simulation.R 300 400
 ```
 
-The same procedure can be repeated for:
+Each command performs the repeated sampling and model estimation procedure under the corresponding measurement budget and saves an `.RData` file:
 
 ```text
-C = 200
-C = 300
-C = 400
+result-300-200.RData
+result-300-300.RData
+result-300-400.RData
 ```
 
-to reproduce the experimental settings considered in the paper.
+After generating the result files, run:
+
+```bash
+Rscript summary.R
+```
+
+to calculate the prediction performance measures and summarize the results across repeated experiments.
 
 ## Directory and Codes
 
 ```text
 .
 ├── README.md
-├── data/
-│   └── healthcare-dataset-stroke-data.csv
-├── code/
-│   ├── otherftn_ds.R
-│   ├── stroke_ds.R
-│   └── sum_ds.R
-└── results/
+├── framework.png
+├── healthcare-dataset-stroke-data.csv
+├── methods.R
+├── simulation.R
+└── summary.R
 ```
 
-### `code/otherftn_ds.R`
+### `framework.png`
 
-Contains the functions required for the analysis, including:
+Illustrates the general **surrogate-assisted optimal sampling framework**.
 
-- CE-based optimal sampling
-- MSE-based optimal sampling
-- inverse-probability-weighted estimation
-- maximum likelihood estimation
-- OSCA
-- prediction performance summaries
+The figure describes the full procedure from the target population and surrogate split to optimal sampling, response measurement, inverse-probability-weighted prediction model estimation, and the final goal of improving out-of-sample risk prediction.
 
-### `code/stroke_ds.R`
+### `healthcare-dataset-stroke-data.csv`
 
-Runs the healthcare stroke data application, including:
+Contains the original **Healthcare Stroke Prediction Dataset** used in the real-data application.
 
-- data preprocessing
-- pilot sample construction
-- optimal sampling probability calculation
-- response sampling under measurement constraints
-- model estimation
-- repeated experiments
+The dataset contains 5,110 patient records with demographic, clinical, and lifestyle variables and the binary stroke response.
 
-### `code/sum_ds.R`
+### `methods.R`
 
-Summarizes the simulation results and computes:
+Contains the statistical and numerical functions used to implement the proposed CE method and the comparison methods.
 
-- CE
-- MSE
-- specificity
-- sensitivity
-- AUC
+Specifically, the file includes:
+
+- MSE loss, gradient, and parameter estimation,
+- MSE-based optimal sampling probability calculation,
+- maximum likelihood estimation,
+- inverse-probability-weighted cross-entropy loss and gradient,
+- CE-based parameter estimation,
+- the proposed CE-based optimal sampling probability calculation,
+- OSCA estimation,
+- numerical matrix inversion utilities, and
+- prediction and MSE summary functions.
+
+### `simulation.R`
+
+Implements the main healthcare stroke data experiment.
+
+The script:
+
+- loads and preprocesses the original stroke dataset,
+- constructs the prediction design matrix,
+- sets `S = 0` for all observations,
+- randomly selects the pilot sample,
+- obtains preliminary MSE- and CE-based estimators,
+- removes the pilot observations from the subsequent analysis sample,
+- computes MSE- and CE-based optimal sampling probabilities,
+- fits the FULL benchmark,
+- repeatedly implements CE, MSE, OSCA, and SRS,
+- stores predicted probabilities and MSE values from each repetition, and
+- saves the resulting R workspace for subsequent evaluation.
+
+### `summary.R`
+
+Processes the output generated by `simulation.R` and evaluates predictive performance.
+
+For each method, the script calculates:
+
+- **CE** using predicted probabilities within the numerical stability range,
+- **MSE**,
+- **TN** (specificity),
+- **TP** (sensitivity), and
+- **AUC**.
+
+The metrics are averaged across repetitions and reported for:
+
+```text
+CE
+MSE
+OSCA
+SRS
+FULL
+```
 
 ## Results
 
-The healthcare stroke application demonstrates that the proposed **CE-based optimal sampling method remains effective even when no surrogate information is available**.
+The healthcare stroke application evaluates whether the proposed optimal sampling strategy remains effective in a rare-outcome setting **without surrogate information**.
 
-Under this setting, all observations belong to the initially unlabeled group and sampling is guided entirely by the available covariate information.
+Because \(S=0\) for all observations, the proposed procedure operates entirely through patient covariates and the preliminary prediction model. In other words, the general surrogate-assisted procedure reduces to a **covariate-assisted optimal sampling procedure**.
 
-Across the considered measurement budgets, the proposed CE method achieves favorable prediction performance, particularly in terms of cross-entropy loss and AUC, compared with the competing subsampling approaches.
+Across the measurement budgets considered in the study, the proposed CE method achieves the lowest cross-entropy loss among the subsampling methods and the highest AUC.
 
-These results illustrate that the proposed framework is not restricted to settings with an available positive-only surrogate and can also be used as a **covariate-assisted optimal sampling procedure for rare-outcome prediction**.
+The results demonstrate that the proposed optimal sampling framework is not limited to settings in which a positive-only surrogate is available and can also provide effective risk prediction under measurement constraints using covariate information alone.
 
 ## Citation
 
@@ -226,4 +325,4 @@ If you use this repository in academic work, please cite:
 
 ## Acknowledgement
 
-This repository was developed with support from the 서울시립대학교 데이터 사이언스 플러스 차세대 융합인재 양성사업단 - http://dsplus.uos.ac.kr/
+This repository was developed with support from the **서울시립대학교 데이터 사이언스 플러스 차세대 융합인재 양성사업단** - http://dsplus.uos.ac.kr/
