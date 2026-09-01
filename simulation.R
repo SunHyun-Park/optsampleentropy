@@ -1,8 +1,7 @@
 # Library -----------------------------------------------------------------
 rm(list=ls())
-.libPaths( c( .libPaths(), '/storage/home/s/szl562/R/x86_64-redhat-linux-gnu-library/3.5') )
-.libPaths( c( .libPaths(), '/storage/home/s/szl562/R/x86_64-redhat-linux-gnu-library/3.6') )
-source('Comparison methods.R')
+
+source("methods.R")
 
 #install.packages('data.table')
 #install.packages('caret')
@@ -17,7 +16,7 @@ library(snowfall)
 # Parameter ---------------------------------------------------------------
 
 args <- as.numeric(commandArgs(trailingOnly = TRUE))
-
+nsim <- 1000
 m <- args[1]
 C <- args[2]
 
