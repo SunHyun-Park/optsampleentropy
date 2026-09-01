@@ -94,13 +94,11 @@ This repository provides the data preprocessing component for the healthcare str
 If you use this preprocessing pipeline or dataset preparation procedure in academic work, please cite:
 
 ```bibtex
-@misc{park2026surrogate,
+@article{park2026surrogate,
   title={Surrogate-assisted optimal sampling for risk prediction under measurement constraints},
   author={Park, Sunhyun and Lee, Seong-ho},
-  year={2026},
-  eprint={2606.03477},
-  archivePrefix={arXiv},
-  primaryClass={stat.ME}
+  journal={arXiv preprint arXiv:2606.03477},
+  year={2026}
 }
 ```
 
