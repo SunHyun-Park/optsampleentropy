@@ -1,7 +1,5 @@
 # Library and Function ----------------------------------------------------
 
-rm(list=ls())
-setwd("/home/sunhyun/mysim/othersim/stroke")
 library(pROC)
 library(ggplot2)
 
@@ -40,7 +38,6 @@ for(i in 1:length(sizes)){
 }
 
 rm(list=c('result',paste0('result',1:length(sizes))))
-tmp$optpi.p  
 
 # CE ---------------------------------------------------------------------
 
