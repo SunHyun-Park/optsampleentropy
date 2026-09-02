@@ -1,4 +1,4 @@
-# Optimal Sampling for Healthcare Stroke Data
+# Surrogate-assisted optimal sampling for risk prediction under measurement constraints
 
 This repository provides the R implementation of the healthcare stroke data application in:
 
